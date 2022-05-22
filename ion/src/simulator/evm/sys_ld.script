@@ -1,0 +1,119 @@
+
+
+MEMORY
+{
+  vmRAM    (rwx) : ORIGIN = 0x02000000, LENGTH = 4096K
+  vmROM    (rx ) : ORIGIN = 0x00100000, LENGTH = 10M
+}
+
+STACK_SIZE = 32K;
+
+
+OUTPUT_ARCH(arm)
+ENTRY(___init)
+SECTIONS
+{
+
+	.init.text :
+	{ 
+		*(.init)
+
+	} >vmROM
+
+	.init.data :
+	{
+		*(.init.data)
+	} >vmROM
+
+ 	.fini_array    :
+ 	{
+ 	  PROVIDE (__fini_array_start = .);
+ 	  KEEP (*(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
+ 	  KEEP (*(.fini_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .dtors))
+ 	  PROVIDE (__fini_array_end = .);
+ 	} >vmROM
+
+  	.ctors          :
+  	{
+		PROVIDE(__ctors_start__ = .);
+		KEEP (*(SORT(.init_array.*)))
+		KEEP (*(.init_array))
+		PROVIDE(__ctors_end__ = .);	
+  	} >vmROM
+
+  	.dtors          :
+  	{
+    	KEEP (*(SORT(.dtors.*)))
+    	KEEP (*(.dtors))
+  	} >vmROM
+
+	
+	.text :	
+	{
+		*(.text)
+		*(.text.*)
+	} >vmROM
+
+    .ARM.extab : ALIGN(4) {
+        *(.ARM.extab*)
+    } > vmROM
+
+	.ARM.exidx : ALIGN(4) {
+	    __exidx_start = .;
+	    *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+	    __exidx_end = .;
+	} > vmROM
+
+	.rodata : 
+	{
+		*(.rodata) 
+		*(.rodata.*)
+		rodata_end = .;
+	} >vmROM
+
+	_eronly = ABSOLUTE(.);
+	.data : ALIGN(4)
+	{
+		_sdata = ABSOLUTE(.);
+		*(.data)
+    	*(.data.*)
+        *(.gnu.linkonce.d.*)
+
+		/*CONSTRUCTORS*/
+		_edata = ABSOLUTE(.);
+	} >vmRAM AT >vmROM
+
+    data_size = SIZEOF(.data);
+    data_load_start = LOADADDR(.data);
+
+    .bss : ALIGN(4) {
+		. = ALIGN(4);
+        _sbss = ABSOLUTE(.);
+        *(.gnu.linkonce.b.*)
+		*(.bss)
+    	*(.bss.*)
+        *(COMMON)
+        . = ALIGN(4);
+        _ebss = ABSOLUTE(.);
+    } > vmRAM
+ 
+	.heap : ALIGN(4) {
+		__HEAP_START = ABSOLUTE(.);
+	} > vmRAM
+	
+	.heap : {
+    	_heap_start = .;
+    	/* Note: We don't increment "." here, we set it. */
+    	. = (ORIGIN(vmRAM) + LENGTH(vmRAM) - STACK_SIZE);
+    	_heap_end = .;
+  	} >vmRAM
+
+  	.stack : {
+    	. = ALIGN(8);
+    	_stack_end = .;
+    	. += (STACK_SIZE - 8);
+    	. = ALIGN(8);
+    	_stack_start = .;
+  	} >vmRAM
+
+}

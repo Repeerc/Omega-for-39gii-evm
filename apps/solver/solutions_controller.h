@@ -81,13 +81,14 @@ private:
   constexpr static int k_messageCellType = 4;
 
   // Heights and widths
-  constexpr static KDCoordinate k_defaultCellHeight = 20;
+//  constexpr static KDCoordinate k_defaultCellHeight = 20;
+  constexpr static KDCoordinate k_defaultCellHeight = 11;
   constexpr static int k_symbolCellWidth = 90;
   constexpr static int k_valueCellWidth = 190;
 
   // Number of cells
   constexpr static int k_maxNumberOfVisibleCells = (Ion::Display::Height - 3 * Metric::TitleBarHeight) / k_defaultCellHeight + 1; // When displaying approximate solutions for cos(x) = 0 between 0 and 1800 and scrolling down
-  static_assert(k_maxNumberOfVisibleCells == 10, "k_maxNumberOfVisibleCells has changed"); //This assert is just for information purposes
+  //static_assert(k_maxNumberOfVisibleCells == 10, "k_maxNumberOfVisibleCells has changed"); //This assert is just for information purposes
   static_assert(k_maxNumberOfVisibleCells <= EquationStore::k_maxNumberOfSolutions + Poincare::Expression::k_maxNumberOfVariables, "We can reduce the number of cells in Solver:SolutionsController.");
   constexpr static int k_maxNumberOfSymbols = EquationStore::k_maxNumberOfSolutions + Poincare::Expression::k_maxNumberOfVariables;
   constexpr static int k_numberOfSymbolCells = k_maxNumberOfVisibleCells < k_maxNumberOfSymbols ? k_maxNumberOfVisibleCells : k_maxNumberOfSymbols;

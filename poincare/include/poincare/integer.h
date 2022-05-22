@@ -13,7 +13,8 @@ class LayoutNode;
 class Integer;
 struct IntegerDivision;
 
-#ifdef _3DS
+//#ifdef _3DS
+#if (!defined _3DS) || (!defined _EVM)  
 typedef unsigned short half_native_uint_t;
 typedef int native_int_t;
 typedef long long int double_native_int_t;

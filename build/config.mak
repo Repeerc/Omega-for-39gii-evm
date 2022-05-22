@@ -1,7 +1,9 @@
 # You can override those settings on the command line
 
-PLATFORM ?= device
-DEBUG ?= 0
+#PLATFORM ?= device
+
+PLATFORM ?= simulator 
+DEBUG ?= 1
 
 HOME_DISPLAY_EXTERNALS ?= 1
 EPSILON_VERSION ?= 15.5.0
