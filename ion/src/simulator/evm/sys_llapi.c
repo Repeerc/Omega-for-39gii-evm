@@ -52,22 +52,27 @@
  uint32_t ll_gettime_us()  __attribute__((naked));
  uint32_t ll_gettime_us()
 {
-    __asm volatile("swi %0" :: "i"(LL_SWI_GET_TIME_US));
+    __asm volatile("swi %0" :: "i"(LL_FAST_SWI_GET_TIME_US));
     __asm volatile("bx lr");
 }
 
 void NAKED ll_vmsleep_ms(uint32_t ms)
 {
     __asm volatile("push {r1-r12, lr}");
-    __asm volatile("swi %0" :: "i"(LL_SWI_VM_SLEEP_MS));
+    __asm volatile("swi %0" :: "i"(LL_FAST_SWI_VM_SLEEP_MS));
     __asm volatile("pop {r1-r12, lr}");
     __asm volatile("bx lr");
 }
 
 uint32_t NAKED ll_vm_check_key(void)
 {
-    __asm volatile("swi %[num]" :: [num]"i"(LL_SWI_CHECK_KEY));
+    __asm volatile("swi %[num]" :: [num]"i"(LL_FAST_SWI_CHECK_KEY));
     __asm volatile("bx lr");
+}
+
+void  ll_setKeyboard(bool enable_report)
+{
+    __asm volatile("swi %0" :: "i"(LL_SWI_SET_KEY_REPORT));
 }
 
 void ll_setTimer(bool enbale, uint32_t period_ms) __attribute__((naked));

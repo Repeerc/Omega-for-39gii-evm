@@ -45,16 +45,15 @@ typedef struct DispPutBoxInfo_t
 }DispPutBoxInfo_t;
 
 
+#define LL_FAST_SWI_BASE                (0xEF00)
 #define LL_SWI_BASE                     (0xEE00)
 #define LL_SWI_NUM                      (255)
-
 
 #define LL_SWI_PUT_CH                  (LL_SWI_BASE + 2)
 #define LL_SWI_WRITE_STRING1           (LL_SWI_BASE + 3)
 #define LL_SWI_WRITE_STRING2           (LL_SWI_BASE + 4)
-#define LL_SWI_GET_TIME_US             (LL_SWI_BASE + 5)
-#define LL_SWI_VM_SLEEP_MS             (LL_SWI_BASE + 6)
-
+#define LL_FAST_SWI_GET_TIME_US        (LL_FAST_SWI_BASE + 5)
+#define LL_FAST_SWI_VM_SLEEP_MS        (LL_FAST_SWI_BASE + 6)
 
 
 #define LL_SWI_ENABLE_IRQ              (LL_SWI_BASE + 7)
@@ -76,12 +75,15 @@ typedef struct DispPutBoxInfo_t
 #define LL_SWI_DISPLAY_SET_INDICATION  (LL_SWI_BASE + 22)
 
 
-#define LL_SWI_SET_KEYBOARD            (LL_SWI_BASE + 30)
-#define LL_SWI_CHECK_KEY               (LL_SWI_BASE + 31)
+#define LL_SWI_SET_KEY_REPORT          (LL_SWI_BASE + 30)
+#define LL_FAST_SWI_CHECK_KEY          (LL_FAST_SWI_BASE + 31)
+
 
 #define LL_SWI_PWR_POWEROFF            (LL_SWI_BASE + 40)
 #define LL_SWI_PWR_RESET               (LL_SWI_BASE + 41)
 #define LL_SWI_PWR_HIBERNATE           (LL_SWI_BASE + 42)
+
+#define LL_SWI_SET_SERIALPORT          (LL_SWI_BASE + 50)
 
 
 #define LL_IRQ_SERIAL                  (0)

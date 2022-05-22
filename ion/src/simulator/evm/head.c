@@ -109,8 +109,8 @@ void  ___init(void)
 
     ll_set_irq_stack((uint32_t)&IRQ_Stack[380]);
     ll_set_irq_vector((uint32_t)__IRQ_ISR);
-    
-    //ll_enable_irq(true);
+    ll_setKeyboard(true);
+    ll_enable_irq(true);
 
 
     

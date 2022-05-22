@@ -24,9 +24,9 @@ void ll_putStr2(char *s, uint32_t len);
 
 uint32_t ll_DispFlush(DispFlushInfo_t *s);
 
+uint32_t NAKED ll_vm_check_key(void);
 void NAKED ll_vmsleep_ms(uint32_t ms);
-uint32_t ll_vm_check_key(void);
-
+void  ll_setKeyboard(bool enable_report);
 void ll_setTimer(bool enbale, uint32_t period_ms);
 void ll_set_irq_vector(uint32_t addr);
 void ll_set_irq_stack(uint32_t addr);
