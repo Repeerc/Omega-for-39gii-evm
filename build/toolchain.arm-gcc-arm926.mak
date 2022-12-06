@@ -18,8 +18,8 @@ SFLAGS += -Wnarrowing
 
 CFLAGS += -mtune=arm926ej-s -mcpu=arm926ej-s -marm -D_EVM -Wnarrowing
 
-CXXFLAGS = $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11 -Wnarrowing
-
+CXXFLAGS = -mtune=arm926ej-s -mcpu=arm926ej-s -marm -D_EVM -std=gnu++11 -fno-exceptions -fno-rtti -fno-threadsafe-statics
+# -std=gnu++11
 LIBS = -lm
 
 #LIBPATHS := $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
@@ -27,5 +27,5 @@ LIBS = -lm
 LDFLAGS += -Wl,--gc-sections
 
 
-LDFLAGS += $(SFLAGS) -lm -lgcc -lstdc++ -nostartfiles -Wl,-T,$(LDSCRIPT)
+LDFLAGS += $(SFLAGS) -lc -lm -lstdc++ -nostartfiles -Wl,-T,$(LDSCRIPT)
 # -lc   -lgcc -lstdc++

@@ -13,25 +13,32 @@ namespace Ion {
 namespace Simulator {
 namespace Display {
 
-uint8_t *VRAMBUF = nullptr;
+//uint8_t VRAMBUF[256*128];
 
 void point(unsigned int x,unsigned int y, uint8_t c)
 {
+	/*
   if((x > 256) || (y > 127)){
     return;
   }
+  if(VRAMBUF)
+  {
+	  VRAMBUF[x + y * 256] = c;
+  }*/
   //ll_DispHLine(y, x, x, c);
 
-  ll_DispVLine(x, y, y, c);
+  //ll_DispVLine(x, y, y, c);
 }
 
 void init() {
   // gfxSetScreenFormat(GFX_TOP, GSP_BGR8_OES);
   //  gfxSetScreenFormat(GFX_BOTTOM, GSP_BGR8_OES);
-  //gfxSetDoubleBuffering(GFX_BOTTOM, false);
+  //gfxSetDoubleBuffering(GFX_BOTTOM, false); 
 
-  VRAMBUF = (uint8_t *)malloc(256*127);
-  memset(VRAMBUF, 0 , 256*127);
+  //VRAMBUF = (uint8_t *)malloc(256*127);
+  //printf("Disp Init\n");
+  //memset(VRAMBUF, 0 , 256*127);
+  //ll_disp_put_area(VRAMBUF, 0, 0, 255, 126);
 
 }
 
@@ -39,12 +46,28 @@ void quit() {
 
 }
 
+static uint8_t lineBuffer[256];
+ 
 void draw() {
+ 
+	uint8_t c;
+	for(int j = 0; j < Ion::Display::Height; j++) {
+		for(uint32_t i = 0; i < Ion::Display::Width; i++) {
+			      c = (
+					Framebuffer::address()[i + j * Ion::Display::Width].blue() +
+					Framebuffer::address()[i + j * Ion::Display::Width].green() +
+					Framebuffer::address()[i + j * Ion::Display::Width].red()
+				) / 3;
+				if(i < 256)
+					lineBuffer[i] = c;
+		}
+		
+		ll_disp_put_area((uint8_t *)lineBuffer, 0, j, 255, j);
+	  }
 
-
-
-  printf("Draw,W:%d, H:%d\n", Ion::Display::Width, Ion::Display::Height);
+  //printf("Draw,W:%d, H:%d\n", Ion::Display::Width, Ion::Display::Height);
   //320x240
+  /*
   uint8_t c;
   for(int i = 0; i < Ion::Display::Width; i++) {
     for(int j = 0; j < Ion::Display::Height; j++) {
@@ -57,14 +80,15 @@ void draw() {
       ;
       
 
-      VRAMBUF[i + j * 256] = 255 - c;
+      VRAMBUF[i + j * 256] = c;
       
       //point(i/1.4 ,j/1.9 , 255 - c);
       //point(i ,j , 255 - c);
 
     }
   }
-  ll_DispPutArea(VRAMBUF, 0, 0, 255, 126);
+  */
+  //ll_disp_put_area((uint8_t *)Framebuffer::address(), 0, 0, 255, 126);
 
   /*
   pixels = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);

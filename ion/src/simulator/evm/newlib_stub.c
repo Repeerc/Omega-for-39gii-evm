@@ -16,10 +16,10 @@
 #undef errno
 extern int errno;
 
-#define HEAP_END    0x023F4000
+//#define HEAP_END    0x023F4000
+extern unsigned int _heap_end;
 
-
-extern unsigned int __HEAP_START;
+extern unsigned int _heap_start;
 static void *heap = NULL;
 
 //void __sync_synchronize()  __attribute__((naked));
@@ -35,15 +35,15 @@ caddr_t _sbrk ( uint32_t incr )
     
 	void *prev_heap;
     if(heap == NULL){
-        heap = (uint32_t *)&__HEAP_START;
+        heap = (uint32_t *)&_heap_start;
     }
     //ll_putStr("_sbrk\n");
 
     prev_heap = heap;
     
-    if(((uint32_t)heap + incr) > HEAP_END){
+    if(((uint32_t)heap + incr) > (uint32_t)(&_heap_end)){
         //dbg_printf("MEMORY OVER FLOW\n");
-        ll_putStr("Mem OF.....\n");
+        ll_put_str("Mem OF.....\n");
 
         return 0;
     }
@@ -53,20 +53,6 @@ caddr_t _sbrk ( uint32_t incr )
 
 }
 
-size_t xPortGetFreeHeapSize( void )
-{
-	return HEAP_END - (uint32_t)heap;
-}
-
-size_t xPortGetTotalHeapSize( void )
-{
-	return HEAP_END - (uint32_t)(&__HEAP_START);
-}
-
-uint32_t getHeapAddr()
-{
-    return (uint32_t)heap;
-}
 
 int _close_r(struct _reent *pReent, int fd) {
     pReent->_errno = ENOTSUP;
@@ -189,7 +175,7 @@ _ssize_t _write_r(struct _reent *pReent, int fd, const void *buf, size_t nbytes)
         //    debugPutch( ch[i] );
         //}
 
-        ll_putStr2((char *)buf, nbytes);
+        ll_put_str2((char *)buf, nbytes);
         
         return nbytes;
        // xSemaphoreGive(muxWrite);
@@ -210,8 +196,8 @@ int _gettimeofday_r(struct _reent *pReent, struct timeval *__tp, struct timezone
 
     if(__tp != NULL)
     {
-        __tp->tv_sec = ll_gettime_us()/1000000;
-        __tp->tv_usec = ll_gettime_us();
+        __tp->tv_sec = ll_get_time_us()/1000000;
+        __tp->tv_usec = ll_get_time_us();
     }else{
         printf("__tp NULL\n");
     }
@@ -284,14 +270,15 @@ char *getcwd(char *buf, size_t size) {
 void abort(void) {
     //Abort called
     printf("abort\n");
+	ll_power_off();
     while (1)
-        ;
+	ll_power_off();
 }
 
 void _exit(int i) {
     printf("_exit\n");
     while (1)
-        ;
+	ll_power_off();
 }
 
 #ifdef __cplusplus          

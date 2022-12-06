@@ -18,8 +18,8 @@ void Ion::Timing::msleep(uint32_t ms)
 {
     //ll_vmsleep_ms(ms);
     
-    uint32_t start_time = ll_gettime_us() / 1000;
-    while((ll_gettime_us() / 1000) - start_time < ms)
+    uint32_t start_time = ll_get_time_us() / 1000;
+    while((ll_get_time_us() / 1000) - start_time < ms)
     {
         ;
     }
@@ -27,7 +27,7 @@ void Ion::Timing::msleep(uint32_t ms)
 
 uint64_t Ion::Timing::millis()
 {
-    return ll_gettime_us()/1000;
+    return ll_get_time_us()/1000;
     //return ll_gettime_us();
 }
 
@@ -50,7 +50,7 @@ extern "C"
         //uint32_t *test;
         //test = (uint32_t *)malloc(1024);
         //free(test);
-        ll_putStr("ion_main.\n");
+        ll_put_str("ion_main.\n");
         
         //ion_main(arguments.size(), &arguments[0]);
         ion_main(0, nullptr);

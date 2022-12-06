@@ -4,56 +4,22 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef struct CreateTaskInfo_t
-{
-    void *entry;
-    void *stack;
-    char *name;
-    uint8_t priority;
-    uint32_t stackSize;
-    void *passParameter;
-
-}CreateTaskInfo_t;
-
-typedef struct DispFlushInfo_t
-{
-    uint8_t *vram;
-    uint32_t x0;
-    uint32_t y0;
-    uint32_t x1;
-    uint32_t y1;
-}DispFlushInfo_t;
-
-typedef struct DispPutStrInfo_t
-{
-    char *string;
-    uint32_t x0;
-    uint32_t y0;
-    uint8_t fg;
-    uint8_t bg;
-    uint8_t fontsize;
-}DispPutStrInfo_t;
-
-typedef struct DispPutBoxInfo_t
-{
-    uint32_t x0;
-    uint32_t y0;
-    uint32_t x1;
-    uint32_t y1;
-    bool fill;
-    uint8_t color;
-}DispPutBoxInfo_t;
-
-
 #define LL_FAST_SWI_BASE                (0xEF00)
 #define LL_SWI_BASE                     (0xEE00)
+#define SYS_SWI_BASE                     (0xAC00)
 #define LL_SWI_NUM                      (255)
+
+#define LL_FAST_SWI_GET_STVAL          (LL_FAST_SWI_BASE + 0)
+#define LL_FAST_SWI_SET_STVAL          (LL_FAST_SWI_BASE + 1)
 
 #define LL_SWI_PUT_CH                  (LL_SWI_BASE + 2)
 #define LL_SWI_WRITE_STRING1           (LL_SWI_BASE + 3)
 #define LL_SWI_WRITE_STRING2           (LL_SWI_BASE + 4)
+
 #define LL_FAST_SWI_GET_TIME_US        (LL_FAST_SWI_BASE + 5)
 #define LL_FAST_SWI_VM_SLEEP_MS        (LL_FAST_SWI_BASE + 6)
+#define LL_FAST_SWI_GET_TIME_MS        (LL_FAST_SWI_BASE + 7)
+
 
 
 #define LL_SWI_ENABLE_IRQ              (LL_SWI_BASE + 7)
@@ -67,10 +33,6 @@ typedef struct DispPutBoxInfo_t
 #define LL_SWI_ENABLE_TIMER            (LL_SWI_BASE + 15)
 
 
-#define LL_SWI_DISPLAY_PUT_BOX         (LL_SWI_BASE + 17)
-#define LL_SWI_DISPLAY_HLINE           (LL_SWI_BASE + 18)
-#define LL_SWI_DISPLAY_VLINE           (LL_SWI_BASE + 19)
-#define LL_SWI_DISPLAY_CLEAR           (LL_SWI_BASE + 20)
 #define LL_SWI_DISPLAY_FLUSH           (LL_SWI_BASE + 21)
 #define LL_SWI_DISPLAY_SET_INDICATION  (LL_SWI_BASE + 22)
 
@@ -82,13 +44,61 @@ typedef struct DispPutBoxInfo_t
 #define LL_SWI_PWR_POWEROFF            (LL_SWI_BASE + 40)
 #define LL_SWI_PWR_RESET               (LL_SWI_BASE + 41)
 #define LL_SWI_PWR_HIBERNATE           (LL_SWI_BASE + 42)
+#define LL_FAST_SWI_PWR_VOLTAGE        (LL_FAST_SWI_BASE + 43)
+#define LL_FAST_SWI_CORE_TEMP          (LL_FAST_SWI_BASE + 44)
+#define LL_SWI_PWR_SPEED               (LL_SWI_BASE + 45)
+#define LL_FAST_SWI_RTC_GET_SEC        (LL_FAST_SWI_BASE + 46)
+#define LL_FAST_SWI_RTC_SET_SEC        (LL_FAST_SWI_BASE + 47)
 
 #define LL_SWI_SET_SERIALPORT          (LL_SWI_BASE + 50)
+#define LL_SWI_SERIAL_GETCH            (LL_SWI_BASE + 51)
+#define LL_SWI_SERIAL_RX_COUNT         (LL_SWI_BASE + 52)
+
+#define LL_SWI_CLKCTL_GET_DIV          (LL_SWI_BASE + 60)
+#define LL_SWI_CLKCTL_SET_DIV          (LL_SWI_BASE + 61)
+
+
+
+#define LL_SWI_FLASH_PAGE_READ         (LL_SWI_BASE + 70)
+#define LL_SWI_FLASH_PAGE_WRITE        (LL_SWI_BASE + 71)
+#define LL_SWI_FLASH_PAGE_TRIM         (LL_SWI_BASE + 72)
+#define LL_SWI_FLASH_SYNC              (LL_SWI_BASE + 73)
+#define LL_SWI_FLASH_PAGE_NUM          (LL_SWI_BASE + 74)
+#define LL_SWI_FLASH_PAGE_SIZE_B       (LL_SWI_BASE + 75)
+
+#define LL_FAST_SWI_SYSTEM_IDLE             (LL_FAST_SWI_BASE + 80)
+#define LL_FAST_SWI_CORE_CUR_FREQ           (LL_FAST_SWI_BASE + 81)
+
+
+#define LL_FAST_SWI_GET_CHARGE_STATUS     (LL_FAST_SWI_BASE + 82)
+#define LL_SWI_CHARGE_ENABLE              (LL_SWI_BASE + 83)
+#define LL_SWI_SLOW_DOWN_ENABLE              (LL_SWI_BASE + 84)
+#define LL_SWI_SLOW_DOWN_MINFRAC              (LL_SWI_BASE + 85)
+
+
+
+#define LL_FAST_SWI_PCM_BUFFER_IS_IDLE        (LL_FAST_SWI_BASE + 90)
+#define LL_FAST_SWI_PCM_BUFFER_PLAY           (LL_FAST_SWI_BASE + 91)
+
+
+
+#define LL_SWI_MEM_PHY_INFO                  (LL_SWI_BASE + 100)
+#define LL_FAST_SWI_MEM_COMPRATE             (LL_FAST_SWI_BASE + 101)
+#define LL_FAST_SWI_MEM_ENABLE_SWAP          (LL_FAST_SWI_BASE + 102)
+#define LL_FAST_SWI_MEM_SWAP_SIZE            (LL_FAST_SWI_BASE + 103)
+
 
 
 #define LL_IRQ_SERIAL                  (0)
 #define LL_IRQ_KEYBOARD                (1)
 #define LL_IRQ_TIMER                   (2)
+#define LL_IRQ_MMU                     (3)
+
+
+
+#define SYS_APP_EXIT                            (SYS_SWI_BASE + 1)
+#define SYS_APP_SLEEP_MS                        (SYS_SWI_BASE + 2)
+
 
 #endif
 

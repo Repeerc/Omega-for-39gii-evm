@@ -2,11 +2,11 @@
 
 MEMORY
 {
-  vmRAM    (rwx) : ORIGIN = 0x02000000, LENGTH = 4096K
-  vmROM    (rx ) : ORIGIN = 0x00100000, LENGTH = 10M
+  vmRAM    (rwx) : ORIGIN = 0x02000000, LENGTH = 320K
+  vmROM    (rx ) : ORIGIN = 0x00100000, LENGTH = 6M
 }
 
-STACK_SIZE = 32K;
+STACK_SIZE = 16K;
 
 
 OUTPUT_ARCH(arm)
@@ -97,11 +97,8 @@ SECTIONS
         _ebss = ABSOLUTE(.);
     } > vmRAM
  
-	.heap : ALIGN(4) {
+	.heap : ALIGN(4){
 		__HEAP_START = ABSOLUTE(.);
-	} > vmRAM
-	
-	.heap : {
     	_heap_start = .;
     	/* Note: We don't increment "." here, we set it. */
     	. = (ORIGIN(vmRAM) + LENGTH(vmRAM) - STACK_SIZE);
